@@ -6,6 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Dashboard Google Ads - MCC</title>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/litepicker.js"></script>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
         <style>
             :root {
@@ -63,24 +64,23 @@
                 max-width: 1400px;
                 margin: 0 auto;
             }
-            .tab-content {
-                display: none;
-            }
-            .tab-content.active {
-                display: block;
-            }
             .controls {
                 margin-bottom: 30px;
                 display: flex;
                 align-items: center;
                 gap: 15px;
             }
-            .controls select {
+            .date-picker-input {
                 padding: 10px 15px;
                 font-size: 1rem;
                 border: 1px solid var(--border);
                 border-radius: 6px;
-                min-width: 300px;
+                min-width: 250px;
+                background-color: white;
+                cursor: pointer;
+                background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%2364748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>');
+                background-repeat: no-repeat;
+                background-position: right 15px center;
             }
             .kpi-grid {
                 display: grid;
@@ -118,11 +118,6 @@
                 margin-bottom: 20px;
                 box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
             }
-            .charts-grid {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 20px;
-            }
         </style>
     </head>
     <body>
@@ -135,119 +130,142 @@
         </div>
         
         <div class="container" id="content-container">
-            <!-- Content will be generated here -->
+            <div class="controls">
+                <label><strong>Período de Análise:</strong></label>
+                <input type="text" id="date_picker" class="date-picker-input" readonly placeholder="Carregando calendário...">
+            </div>
+            
+            <div id="campaign_content"></div>
         </div>
 
         <script>
-            const db = {"30_days": {"name": "30 Dias Atr\u00e1s at\u00e9 Hoje", "start": "2026-06-22", "end": "2026-07-22", "data": [{"id": "23853722808", "name": "Search | Crise | Clonagem de Identidade", "daily": [{"date": "2026-06-22", "impressions": 1559, "clicks": 7, "cost": 15.64, "conversions": 0.0}, {"date": "2026-06-23", "impressions": 835, "clicks": 7, "cost": 16.240697, "conversions": 0.0}, {"date": "2026-06-24", "impressions": 68, "clicks": 7, "cost": 14.5, "conversions": 0.0}, {"date": "2026-06-25", "impressions": 76, "clicks": 2, "cost": 3.58, "conversions": 0.0}, {"date": "2026-06-26", "impressions": 158, "clicks": 8, "cost": 17.61, "conversions": 0.0}, {"date": "2026-06-27", "impressions": 120, "clicks": 5, "cost": 19.15, "conversions": 0.0}, {"date": "2026-06-28", "impressions": 32, "clicks": 4, "cost": 15.22, "conversions": 0.0}, {"date": "2026-06-29", "impressions": 86, "clicks": 3, "cost": 9.297103, "conversions": 1.0}, {"date": "2026-06-30", "impressions": 27, "clicks": 3, "cost": 7.27, "conversions": 0.0}, {"date": "2026-07-01", "impressions": 144, "clicks": 1, "cost": 2.53, "conversions": 1.0}, {"date": "2026-07-02", "impressions": 121, "clicks": 5, "cost": 12.475898, "conversions": 1.0}, {"date": "2026-07-03", "impressions": 131, "clicks": 7, "cost": 23.96, "conversions": 0.0}, {"date": "2026-07-04", "impressions": 74, "clicks": 5, "cost": 16.35, "conversions": 0.0}, {"date": "2026-07-05", "impressions": 61, "clicks": 2, "cost": 4.95, "conversions": 0.0}, {"date": "2026-07-06", "impressions": 140, "clicks": 5, "cost": 13.7, "conversions": 0.0}, {"date": "2026-07-07", "impressions": 192, "clicks": 5, "cost": 19.59, "conversions": 0.0}, {"date": "2026-07-13", "impressions": 2, "clicks": 1, "cost": 3.1, "conversions": 0.0}, {"date": "2026-07-14", "impressions": 25, "clicks": 0, "cost": 0.0, "conversions": 0.0}, {"date": "2026-07-15", "impressions": 137, "clicks": 4, "cost": 22.72, "conversions": 1.0}, {"date": "2026-07-16", "impressions": 109, "clicks": 5, "cost": 25.22, "conversions": 0.0}, {"date": "2026-07-17", "impressions": 89, "clicks": 5, "cost": 25.87, "conversions": 0.0}, {"date": "2026-07-18", "impressions": 70, "clicks": 4, "cost": 18.18, "conversions": 0.0}, {"date": "2026-07-19", "impressions": 132, "clicks": 3, "cost": 12.88, "conversions": 1.0}, {"date": "2026-07-20", "impressions": 26, "clicks": 4, "cost": 13.9, "conversions": 0.0}, {"date": "2026-07-21", "impressions": 102, "clicks": 6, "cost": 17.52, "conversions": 0.0}, {"date": "2026-07-22", "impressions": 97, "clicks": 1, "cost": 3.12, "conversions": 0.0}], "totals": {"impressions": 4613, "clicks": 109, "cost": 354.5736979999999, "conversions": 5.0, "ctr": 2.3628874918708, "cpc": 3.2529697064220175, "cvr": 4.587155963302752, "cpa": 70.91473959999999}}, {"id": "23983998375", "name": "Wpp | Crise | Clonagem de Identidade", "daily": [{"date": "2026-06-30", "impressions": 4, "clicks": 0, "cost": 0.0, "conversions": 0.0}, {"date": "2026-07-01", "impressions": 6, "clicks": 0, "cost": 0.0, "conversions": 0.0}, {"date": "2026-07-02", "impressions": 100, "clicks": 7, "cost": 36.85, "conversions": 0.0}, {"date": "2026-07-03", "impressions": 69, "clicks": 5, "cost": 25.03, "conversions": 0.0}, {"date": "2026-07-04", "impressions": 22, "clicks": 2, "cost": 11.81, "conversions": 0.0}, {"date": "2026-07-05", "impressions": 9, "clicks": 3, "cost": 12.164592, "conversions": 0.0}, {"date": "2026-07-06", "impressions": 20, "clicks": 0, "cost": 0.0, "conversions": 0.0}, {"date": "2026-07-07", "impressions": 57, "clicks": 3, "cost": 17.11, "conversions": 0.0}, {"date": "2026-07-14", "impressions": 4, "clicks": 0, "cost": 0.0, "conversions": 0.0}, {"date": "2026-07-16", "impressions": 28, "clicks": 2, "cost": 11.6, "conversions": 0.0}, {"date": "2026-07-17", "impressions": 43, "clicks": 3, "cost": 15.23, "conversions": 0.0}, {"date": "2026-07-18", "impressions": 31, "clicks": 2, "cost": 9.64, "conversions": 0.0}, {"date": "2026-07-19", "impressions": 23, "clicks": 1, "cost": 5.11, "conversions": 0.0}, {"date": "2026-07-20", "impressions": 22, "clicks": 3, "cost": 13.92, "conversions": 0.0}, {"date": "2026-07-21", "impressions": 32, "clicks": 2, "cost": 8.1, "conversions": 0.0}, {"date": "2026-07-22", "impressions": 32, "clicks": 1, "cost": 4.04, "conversions": 0.0}], "totals": {"impressions": 502, "clicks": 34, "cost": 170.604592, "conversions": 0.0, "ctr": 6.772908366533864, "cpc": 5.017782117647059, "cvr": 0.0, "cpa": 0}}]}, "60_days": {"name": "60 a 30 Dias Atr\u00e1s", "start": "2026-05-23", "end": "2026-06-21", "data": [{"id": "23853722808", "name": "Search | Crise | Clonagem de Identidade", "daily": [{"date": "2026-05-23", "impressions": 124, "clicks": 7, "cost": 29.475398, "conversions": 0.0}, {"date": "2026-05-24", "impressions": 58, "clicks": 4, "cost": 15.93, "conversions": 0.0}, {"date": "2026-05-25", "impressions": 98, "clicks": 5, "cost": 16.91, "conversions": 0.0}, {"date": "2026-05-26", "impressions": 120, "clicks": 3, "cost": 8.477775, "conversions": 0.0}, {"date": "2026-05-27", "impressions": 164, "clicks": 6, "cost": 17.59, "conversions": 0.0}, {"date": "2026-05-28", "impressions": 178, "clicks": 5, "cost": 12.981601, "conversions": 0.0}, {"date": "2026-05-29", "impressions": 101, "clicks": 7, "cost": 15.534222, "conversions": 0.0}, {"date": "2026-05-30", "impressions": 130, "clicks": 4, "cost": 8.309404, "conversions": 0.0}, {"date": "2026-05-31", "impressions": 156, "clicks": 3, "cost": 6.452019, "conversions": 0.0}, {"date": "2026-06-01", "impressions": 212, "clicks": 6, "cost": 18.954385, "conversions": 0.0}, {"date": "2026-06-02", "impressions": 144, "clicks": 8, "cost": 18.202213, "conversions": 0.0}, {"date": "2026-06-03", "impressions": 148, "clicks": 8, "cost": 17.041536, "conversions": 0.0}, {"date": "2026-06-04", "impressions": 37, "clicks": 1, "cost": 1.69, "conversions": 0.0}, {"date": "2026-06-05", "impressions": 67, "clicks": 1, "cost": 2.76, "conversions": 0.0}, {"date": "2026-06-06", "impressions": 150, "clicks": 8, "cost": 29.324144, "conversions": 1.0}, {"date": "2026-06-07", "impressions": 92, "clicks": 8, "cost": 26.648836, "conversions": 0.0}, {"date": "2026-06-08", "impressions": 125, "clicks": 5, "cost": 15.109025, "conversions": 0.0}, {"date": "2026-06-09", "impressions": 174, "clicks": 6, "cost": 15.093838, "conversions": 0.0}, {"date": "2026-06-10", "impressions": 113, "clicks": 7, "cost": 15.545216, "conversions": 0.0}, {"date": "2026-06-11", "impressions": 150, "clicks": 8, "cost": 16.400468, "conversions": 0.0}, {"date": "2026-06-12", "impressions": 111, "clicks": 0, "cost": 0.0, "conversions": 0.0}, {"date": "2026-06-13", "impressions": 245, "clicks": 6, "cost": 25.137446, "conversions": 0.0}, {"date": "2026-06-14", "impressions": 113, "clicks": 4, "cost": 17.02, "conversions": 0.0}, {"date": "2026-06-15", "impressions": 206, "clicks": 6, "cost": 23.320146, "conversions": 0.0}, {"date": "2026-06-16", "impressions": 134, "clicks": 5, "cost": 16.816967, "conversions": 0.0}, {"date": "2026-06-17", "impressions": 91, "clicks": 7, "cost": 19.04, "conversions": 0.0}, {"date": "2026-06-18", "impressions": 618, "clicks": 8, "cost": 17.88, "conversions": 0.0}, {"date": "2026-06-19", "impressions": 510, "clicks": 7, "cost": 12.91, "conversions": 0.0}, {"date": "2026-06-20", "impressions": 665, "clicks": 4, "cost": 7.62, "conversions": 0.0}, {"date": "2026-06-21", "impressions": 328, "clicks": 7, "cost": 16.7, "conversions": 0.0}], "totals": {"impressions": 5562, "clicks": 164, "cost": 464.87463899999995, "conversions": 1.0, "ctr": 2.948579647608774, "cpc": 2.834601457317073, "cvr": 0.6097560975609756, "cpa": 464.87463899999995}}]}};
+            const db = [{"id": "23853722808", "name": "Search | Crise | Clonagem de Identidade", "daily": [{"date": "2026-05-22", "impressions": 200, "clicks": 4, "cost": 20.28, "conversions": 0.0}, {"date": "2026-05-23", "impressions": 124, "clicks": 7, "cost": 29.475398, "conversions": 0.0}, {"date": "2026-05-24", "impressions": 58, "clicks": 4, "cost": 15.93, "conversions": 0.0}, {"date": "2026-05-25", "impressions": 98, "clicks": 5, "cost": 16.91, "conversions": 0.0}, {"date": "2026-05-26", "impressions": 120, "clicks": 3, "cost": 8.477775, "conversions": 0.0}, {"date": "2026-05-27", "impressions": 164, "clicks": 6, "cost": 17.59, "conversions": 0.0}, {"date": "2026-05-28", "impressions": 178, "clicks": 5, "cost": 12.981601, "conversions": 0.0}, {"date": "2026-05-29", "impressions": 101, "clicks": 7, "cost": 15.534222, "conversions": 0.0}, {"date": "2026-05-30", "impressions": 130, "clicks": 4, "cost": 8.309404, "conversions": 0.0}, {"date": "2026-05-31", "impressions": 156, "clicks": 3, "cost": 6.452019, "conversions": 0.0}, {"date": "2026-06-01", "impressions": 212, "clicks": 6, "cost": 18.954385, "conversions": 0.0}, {"date": "2026-06-02", "impressions": 144, "clicks": 8, "cost": 18.202213, "conversions": 0.0}, {"date": "2026-06-03", "impressions": 148, "clicks": 8, "cost": 17.041536, "conversions": 0.0}, {"date": "2026-06-04", "impressions": 37, "clicks": 1, "cost": 1.69, "conversions": 0.0}, {"date": "2026-06-05", "impressions": 67, "clicks": 1, "cost": 2.76, "conversions": 0.0}, {"date": "2026-06-06", "impressions": 150, "clicks": 8, "cost": 29.324144, "conversions": 1.0}, {"date": "2026-06-07", "impressions": 92, "clicks": 8, "cost": 26.648836, "conversions": 0.0}, {"date": "2026-06-08", "impressions": 125, "clicks": 5, "cost": 15.109025, "conversions": 0.0}, {"date": "2026-06-09", "impressions": 174, "clicks": 6, "cost": 15.093838, "conversions": 0.0}, {"date": "2026-06-10", "impressions": 113, "clicks": 7, "cost": 15.545216, "conversions": 0.0}, {"date": "2026-06-11", "impressions": 150, "clicks": 8, "cost": 16.400468, "conversions": 0.0}, {"date": "2026-06-12", "impressions": 111, "clicks": 0, "cost": 0.0, "conversions": 0.0}, {"date": "2026-06-13", "impressions": 245, "clicks": 6, "cost": 25.137446, "conversions": 0.0}, {"date": "2026-06-14", "impressions": 113, "clicks": 4, "cost": 17.02, "conversions": 0.0}, {"date": "2026-06-15", "impressions": 206, "clicks": 6, "cost": 23.320146, "conversions": 0.0}, {"date": "2026-06-16", "impressions": 134, "clicks": 5, "cost": 16.816967, "conversions": 0.0}, {"date": "2026-06-17", "impressions": 91, "clicks": 7, "cost": 19.04, "conversions": 0.0}, {"date": "2026-06-18", "impressions": 618, "clicks": 8, "cost": 17.88, "conversions": 0.0}, {"date": "2026-06-19", "impressions": 510, "clicks": 7, "cost": 12.91, "conversions": 0.0}, {"date": "2026-06-20", "impressions": 665, "clicks": 4, "cost": 7.62, "conversions": 0.0}, {"date": "2026-06-21", "impressions": 328, "clicks": 7, "cost": 16.7, "conversions": 0.0}, {"date": "2026-06-22", "impressions": 1559, "clicks": 7, "cost": 15.64, "conversions": 0.0}, {"date": "2026-06-23", "impressions": 835, "clicks": 7, "cost": 16.240697, "conversions": 0.0}, {"date": "2026-06-24", "impressions": 68, "clicks": 7, "cost": 14.5, "conversions": 0.0}, {"date": "2026-06-25", "impressions": 76, "clicks": 2, "cost": 3.58, "conversions": 0.0}, {"date": "2026-06-26", "impressions": 158, "clicks": 8, "cost": 17.61, "conversions": 0.0}, {"date": "2026-06-27", "impressions": 120, "clicks": 5, "cost": 19.15, "conversions": 0.0}, {"date": "2026-06-28", "impressions": 32, "clicks": 4, "cost": 15.22, "conversions": 0.0}, {"date": "2026-06-29", "impressions": 86, "clicks": 3, "cost": 9.297103, "conversions": 1.0}, {"date": "2026-06-30", "impressions": 27, "clicks": 3, "cost": 7.27, "conversions": 0.0}, {"date": "2026-07-01", "impressions": 144, "clicks": 1, "cost": 2.53, "conversions": 1.0}, {"date": "2026-07-02", "impressions": 121, "clicks": 5, "cost": 12.475898, "conversions": 1.0}, {"date": "2026-07-03", "impressions": 131, "clicks": 7, "cost": 23.96, "conversions": 0.0}, {"date": "2026-07-04", "impressions": 74, "clicks": 5, "cost": 16.35, "conversions": 0.0}, {"date": "2026-07-05", "impressions": 61, "clicks": 2, "cost": 4.95, "conversions": 0.0}, {"date": "2026-07-06", "impressions": 140, "clicks": 5, "cost": 13.7, "conversions": 0.0}, {"date": "2026-07-07", "impressions": 192, "clicks": 5, "cost": 19.59, "conversions": 0.0}, {"date": "2026-07-13", "impressions": 2, "clicks": 1, "cost": 3.1, "conversions": 0.0}, {"date": "2026-07-14", "impressions": 25, "clicks": 0, "cost": 0.0, "conversions": 0.0}, {"date": "2026-07-15", "impressions": 137, "clicks": 4, "cost": 22.72, "conversions": 1.0}, {"date": "2026-07-16", "impressions": 109, "clicks": 5, "cost": 25.22, "conversions": 0.0}, {"date": "2026-07-17", "impressions": 89, "clicks": 5, "cost": 25.87, "conversions": 0.0}, {"date": "2026-07-18", "impressions": 70, "clicks": 4, "cost": 18.18, "conversions": 0.0}, {"date": "2026-07-19", "impressions": 132, "clicks": 3, "cost": 12.88, "conversions": 1.0}, {"date": "2026-07-20", "impressions": 26, "clicks": 4, "cost": 13.9, "conversions": 0.0}, {"date": "2026-07-21", "impressions": 102, "clicks": 6, "cost": 17.52, "conversions": 0.0}, {"date": "2026-07-22", "impressions": 97, "clicks": 1, "cost": 3.12, "conversions": 0.0}]}, {"id": "23983998375", "name": "Wpp | Crise | Clonagem de Identidade", "daily": [{"date": "2026-06-30", "impressions": 4, "clicks": 0, "cost": 0.0, "conversions": 0.0}, {"date": "2026-07-01", "impressions": 6, "clicks": 0, "cost": 0.0, "conversions": 0.0}, {"date": "2026-07-02", "impressions": 100, "clicks": 7, "cost": 36.85, "conversions": 0.0}, {"date": "2026-07-03", "impressions": 69, "clicks": 5, "cost": 25.03, "conversions": 0.0}, {"date": "2026-07-04", "impressions": 22, "clicks": 2, "cost": 11.81, "conversions": 0.0}, {"date": "2026-07-05", "impressions": 9, "clicks": 3, "cost": 12.164592, "conversions": 0.0}, {"date": "2026-07-06", "impressions": 20, "clicks": 0, "cost": 0.0, "conversions": 0.0}, {"date": "2026-07-07", "impressions": 57, "clicks": 3, "cost": 17.11, "conversions": 0.0}, {"date": "2026-07-14", "impressions": 4, "clicks": 0, "cost": 0.0, "conversions": 0.0}, {"date": "2026-07-16", "impressions": 28, "clicks": 2, "cost": 11.6, "conversions": 0.0}, {"date": "2026-07-17", "impressions": 43, "clicks": 3, "cost": 15.23, "conversions": 0.0}, {"date": "2026-07-18", "impressions": 31, "clicks": 2, "cost": 9.64, "conversions": 0.0}, {"date": "2026-07-19", "impressions": 23, "clicks": 1, "cost": 5.11, "conversions": 0.0}, {"date": "2026-07-20", "impressions": 22, "clicks": 3, "cost": 13.92, "conversions": 0.0}, {"date": "2026-07-21", "impressions": 32, "clicks": 2, "cost": 8.1, "conversions": 0.0}, {"date": "2026-07-22", "impressions": 32, "clicks": 1, "cost": 4.04, "conversions": 0.0}]}];
             let charts = {};
+            let activeCampId = db.length > 0 ? db[0].id : null;
+            
+            // Default dates: last 30 days
+            let currentDate = new Date();
+            let startDate = new Date();
+            startDate.setDate(currentDate.getDate() - 30);
+            
+            let currentStartStr = startDate.toISOString().split('T')[0];
+            let currentEndStr = currentDate.toISOString().split('T')[0];
 
-            const campaignsMap = {};
-            for (const periodId in db) {
-                const periodObj = db[periodId];
-                periodObj.data.forEach(camp => {
-                    if (!campaignsMap[camp.id]) {
-                        campaignsMap[camp.id] = { id: camp.id, name: camp.name, periods: {} };
-                    }
-                    campaignsMap[camp.id].periods[periodId] = {
-                        name: periodObj.name,
-                        totals: camp.totals,
-                        daily: camp.daily
-                    };
-                });
-            }
-            const campaignsList = Object.values(campaignsMap);
+            function formatCurrency(val) { return 'R$ ' + val.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
+            function formatNumber(val) { return val.toLocaleString('pt-BR'); }
+            function formatPercent(val) { return val.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + '%'; }
 
-            function formatCurrency(val) {
-                return 'R$ ' + val.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-            }
-            function formatNumber(val) {
-                return val.toLocaleString('pt-BR');
-            }
-            function formatPercent(val) {
-                return val.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + '%';
-            }
-
-            function initTab(campId) {
-                const container = document.getElementById('tab_' + campId);
-                const campData = campaignsMap[campId];
-                
-                let selectHtml = '<div class="controls"><label><strong>Selecione o Período:</strong></label><select id="sel_' + campId + '" onchange="renderPeriod(\'' + campId + '\')">';
-                for (const periodId in campData.periods) {
-                    selectHtml += `<option value="${periodId}">${campData.periods[periodId].name}</option>`;
+            function initUI() {
+                if(db.length === 0) {
+                    document.getElementById('content-container').innerHTML = "<h3>Nenhum dado encontrado nos últimos 180 dias.</h3>";
+                    return;
                 }
-                selectHtml += '</select></div>';
+
+                const tabsContainer = document.getElementById('tabs-container');
+                db.forEach((camp, index) => {
+                    const btn = document.createElement('button');
+                    btn.className = `tab-btn ${index === 0 ? 'active' : ''}`;
+                    btn.innerText = camp.name;
+                    btn.onclick = (e) => {
+                        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                        e.target.classList.add('active');
+                        activeCampId = camp.id;
+                        renderDashboard();
+                    };
+                    tabsContainer.appendChild(btn);
+                });
                 
+                const picker = new Litepicker({
+                    element: document.getElementById('date_picker'),
+                    singleMode: false,
+                    format: 'DD/MM/YYYY',
+                    lang: 'pt-BR',
+                    startDate: startDate,
+                    endDate: currentDate,
+                    setup: (picker) => {
+                        picker.on('selected', (date1, date2) => {
+                            // Convert Litepicker dates to YYYY-MM-DD for filtering
+                            const d1 = date1.dateInstance;
+                            const d2 = date2.dateInstance;
+                            
+                            // Handle timezone offset to ensure exact local date is mapped to YYYY-MM-DD
+                            const tz1 = new Date(d1.getTime() - (d1.getTimezoneOffset() * 60000));
+                            const tz2 = new Date(d2.getTime() - (d2.getTimezoneOffset() * 60000));
+                            
+                            currentStartStr = tz1.toISOString().split('T')[0];
+                            currentEndStr = tz2.toISOString().split('T')[0];
+                            
+                            renderDashboard();
+                        });
+                    }
+                });
+                
+                renderDashboard();
+            }
+
+            function renderDashboard() {
+                if(!activeCampId) return;
+                
+                const camp = db.find(c => c.id === activeCampId);
+                
+                // Filter daily data
+                const filteredData = camp.daily.filter(d => d.date >= currentStartStr && d.date <= currentEndStr);
+                
+                // Calculate totals
+                let t_impr = 0, t_clicks = 0, t_cost = 0, t_conv = 0;
+                filteredData.forEach(d => {
+                    t_impr += d.impressions;
+                    t_clicks += d.clicks;
+                    t_cost += d.cost;
+                    t_conv += d.conversions;
+                });
+                
+                let t_ctr = t_impr > 0 ? (t_clicks / t_impr * 100) : 0;
+                let t_cpc = t_clicks > 0 ? (t_cost / t_clicks) : 0;
+                let t_cvr = t_clicks > 0 ? (t_conv / t_clicks * 100) : 0;
+                let t_cpa = t_conv > 0 ? (t_cost / t_conv) : 0;
+                
+                // Render KPIs
                 let kpiHtml = `
                     <div class="kpi-grid">
-                        <div class="kpi-card"><h3>Impressões</h3><p id="kpi_impr_${campId}">0</p></div>
-                        <div class="kpi-card"><h3>Cliques Totais</h3><p id="kpi_clicks_${campId}">0</p></div>
-                        <div class="kpi-card"><h3>Custo Total</h3><p id="kpi_cost_${campId}">0</p></div>
-                        <div class="kpi-card"><h3>CPC Médio</h3><p id="kpi_cpc_${campId}">0</p></div>
-                        <div class="kpi-card"><h3>CTR</h3><p id="kpi_ctr_${campId}">0</p></div>
-                        <div class="kpi-card"><h3>Conversões</h3><p id="kpi_conv_${campId}">0</p></div>
-                        <div class="kpi-card"><h3>Taxa Conv. (CVR)</h3><p id="kpi_cvr_${campId}">0</p></div>
-                        <div class="kpi-card"><h3>CPA (Custo p/ Lead)</h3><p id="kpi_cpa_${campId}">0</p></div>
+                        <div class="kpi-card"><h3>Impressões</h3><p>${formatNumber(t_impr)}</p></div>
+                        <div class="kpi-card"><h3>Cliques Totais</h3><p>${formatNumber(t_clicks)}</p></div>
+                        <div class="kpi-card"><h3>Custo Total</h3><p>${formatCurrency(t_cost)}</p></div>
+                        <div class="kpi-card"><h3>CPC Médio</h3><p>${formatCurrency(t_cpc)}</p></div>
+                        <div class="kpi-card"><h3>CTR</h3><p>${formatPercent(t_ctr)}</p></div>
+                        <div class="kpi-card"><h3>Conversões</h3><p>${formatNumber(t_conv)}</p></div>
+                        <div class="kpi-card"><h3>Taxa Conv. (CVR)</h3><p>${formatPercent(t_cvr)}</p></div>
+                        <div class="kpi-card"><h3>CPA (Custo p/ Lead)</h3><p>${formatCurrency(t_cpa)}</p></div>
                     </div>
-                `;
-                
-                let chartsHtml = `
                     <div class="chart-container" style="height: 500px;">
-                        <canvas id="chart_combined_${campId}" style="height: 100%; width: 100%;"></canvas>
+                        <canvas id="chart_combined" style="height: 100%; width: 100%;"></canvas>
                     </div>
                 `;
                 
-                container.innerHTML = selectHtml + kpiHtml + chartsHtml;
-                renderPeriod(campId);
-            }
-
-            function renderPeriod(campId) {
-                const sel = document.getElementById('sel_' + campId);
-                if(!sel) return;
-                const periodId = sel.value;
-                const pData = campaignsMap[campId].periods[periodId];
-                const t = pData.totals;
+                document.getElementById('campaign_content').innerHTML = kpiHtml;
                 
-                document.getElementById(`kpi_impr_${campId}`).innerText = formatNumber(t.impressions);
-                document.getElementById(`kpi_clicks_${campId}`).innerText = formatNumber(t.clicks);
-                document.getElementById(`kpi_cost_${campId}`).innerText = formatCurrency(t.cost);
-                document.getElementById(`kpi_cpc_${campId}`).innerText = formatCurrency(t.cpc);
-                document.getElementById(`kpi_ctr_${campId}`).innerText = formatPercent(t.ctr);
-                document.getElementById(`kpi_conv_${campId}`).innerText = formatNumber(t.conversions);
-                document.getElementById(`kpi_cvr_${campId}`).innerText = formatPercent(t.cvr);
-                document.getElementById(`kpi_cpa_${campId}`).innerText = formatCurrency(t.cpa);
+                // Render Chart (group by day or week depending on range)
+                const labels = [];
+                const dataImpr = [];
+                const dataClicks = [];
+                const dataCost = [];
+                const dataConv = [];
                 
-                // Agrupamento por semana
-                const weeklyMap = {};
-                const orderedWeeks = [];
-                pData.daily.forEach(d => {
-                    const [year, month, day] = d.date.split('-');
-                    const dateObj = new Date(year, month - 1, day);
-                    const dayOfWeek = dateObj.getDay(); 
-                    const diff = dateObj.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
-                    const monday = new Date(dateObj.setDate(diff));
-                    const weekStr = monday.getDate().toString().padStart(2, '0') + '/' + (monday.getMonth() + 1).toString().padStart(2, '0');
-                    
-                    if(!weeklyMap[weekStr]) {
-                        weeklyMap[weekStr] = { impressions: 0, clicks: 0, cost: 0, conversions: 0 };
-                        orderedWeeks.push(weekStr);
-                    }
-                    weeklyMap[weekStr].impressions += d.impressions;
-                    weeklyMap[weekStr].clicks += d.clicks;
-                    weeklyMap[weekStr].cost += d.cost;
-                    weeklyMap[weekStr].conversions += d.conversions;
+                // For long periods, we should group by week, but grouping by day is fine up to 60 days
+                // Let's stick to daily grouping for simplicity in the line chart to match exact dates chosen
+                filteredData.forEach(d => {
+                    const [y, m, day] = d.date.split('-');
+                    labels.push(`${day}/${m}`);
+                    dataImpr.push(d.impressions);
+                    dataClicks.push(d.clicks);
+                    dataCost.push(d.cost);
+                    dataConv.push(d.conversions);
                 });
                 
-                const labels = orderedWeeks.map(w => 'Sem. ' + w);
-                const dataImpr = orderedWeeks.map(w => weeklyMap[w].impressions);
-                const dataClicks = orderedWeeks.map(w => weeklyMap[w].clicks);
-                const dataCost = orderedWeeks.map(w => weeklyMap[w].cost);
-                const dataConv = orderedWeeks.map(w => weeklyMap[w].conversions);
+                if(charts['main']) charts['main'].destroy();
                 
-                if(charts[`chart_combined_${campId}`]) charts[`chart_combined_${campId}`].destroy();
-                
-                const ctx = document.getElementById(`chart_combined_${campId}`).getContext('2d');
-                charts[`chart_combined_${campId}`] = new Chart(ctx, {
+                const ctx = document.getElementById(`chart_combined`).getContext('2d');
+                charts['main'] = new Chart(ctx, {
                     type: 'line',
                     data: {
                         labels: labels,
@@ -261,19 +279,14 @@
                     options: { 
                         responsive: true, 
                         maintainAspectRatio: false,
-                        interaction: {
-                            mode: 'index',
-                            intersect: false,
-                        },
+                        interaction: { mode: 'index', intersect: false },
                         plugins: { 
-                            title: { display: true, text: 'Visão Geral (Métricas por Semana)' },
+                            title: { display: true, text: 'Visão Geral Diária no Período Selecionado' },
                             tooltip: {
                                 callbacks: {
                                     label: function(context) {
                                         let label = context.dataset.label || '';
-                                        if (label) {
-                                            label += ': ';
-                                        }
+                                        if (label) label += ': ';
                                         if (context.parsed.y !== null) {
                                             if (label.includes('Custo')) {
                                                 label += new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(context.parsed.y);
@@ -287,52 +300,15 @@
                             }
                         },
                         scales: {
-                            y: {
-                                type: 'linear',
-                                display: true,
-                                position: 'left',
-                                title: { display: true, text: 'Impressões / Custo' },
-                                min: 0
-                            },
-                            y1: {
-                                type: 'linear',
-                                display: true,
-                                position: 'right',
-                                title: { display: true, text: 'Cliques / Conversões' },
-                                grid: { drawOnChartArea: false },
-                                min: 0
-                            }
+                            y: { type: 'linear', display: true, position: 'left', title: { display: true, text: 'Impressões / Custo' }, min: 0 },
+                            y1: { type: 'linear', display: true, position: 'right', title: { display: true, text: 'Cliques / Conversões' }, grid: { drawOnChartArea: false }, min: 0 }
                         }
                     }
                 });
             }
-
-            function switchTab(campId) {
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                
-                event.target.classList.add('active');
-                document.getElementById('tab_' + campId).classList.add('active');
-                
-                renderPeriod(campId);
-            }
-
-            // Generate UI
-            let isFirst = true;
-            campaignsList.forEach(camp => {
-                const btn = document.createElement('button');
-                btn.className = `tab-btn ${isFirst ? 'active' : ''}`;
-                btn.innerText = camp.name;
-                btn.onclick = () => switchTab(camp.id);
-                document.getElementById('tabs-container').appendChild(btn);
-                
-                const content = document.createElement('div');
-                content.id = 'tab_' + camp.id;
-                content.className = `tab-content ${isFirst ? 'active' : ''}`;
-                document.getElementById('content-container').appendChild(content);
-                
-                initTab(camp.id);
-                isFirst = false;
+            
+            document.addEventListener("DOMContentLoaded", function() {
+                initUI();
             });
         </script>
     </body>

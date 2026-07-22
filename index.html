@@ -70,6 +70,28 @@
                 align-items: center;
                 gap: 15px;
             }
+            
+            .preset-ranges {
+                display: flex;
+                gap: 8px;
+                margin-left: 15px;
+            }
+            .preset-btn {
+                padding: 6px 12px;
+                font-size: 0.85rem;
+                background-color: var(--bg);
+                border: 1px solid var(--border);
+                border-radius: 4px;
+                cursor: pointer;
+                color: var(--text-light);
+                font-weight: 600;
+                transition: all 0.2s;
+            }
+            .preset-btn:hover {
+                background-color: var(--primary);
+                color: white;
+                border-color: var(--primary);
+            }
             .date-picker-input {
                 padding: 10px 15px;
                 font-size: 1rem;
@@ -133,6 +155,11 @@
             <div class="controls">
                 <label><strong>Período de Análise:</strong></label>
                 <input type="text" id="date_picker" class="date-picker-input" readonly placeholder="Carregando calendário...">
+                <div class="preset-ranges">
+                    <button class="preset-btn" onclick="setPresetRange(7)">7 Dias</button>
+                    <button class="preset-btn" onclick="setPresetRange(14)">14 Dias</button>
+                    <button class="preset-btn" onclick="setPresetRange(30)">30 Dias</button>
+                </div>
             </div>
             
             <div id="campaign_content"></div>
@@ -175,7 +202,7 @@
                     tabsContainer.appendChild(btn);
                 });
                 
-                const picker = new Litepicker({
+                window.litepickerInstance = new Litepicker({
                     element: document.getElementById('date_picker'),
                     singleMode: false,
                     format: 'DD/MM/YYYY',
@@ -199,6 +226,23 @@
                         });
                     }
                 });
+                
+                renderDashboard();
+            }
+
+            function setPresetRange(days) {
+                let end = new Date();
+                let start = new Date();
+                start.setDate(end.getDate() - days);
+                
+                if (window.litepickerInstance) {
+                    window.litepickerInstance.setDateRange(start, end);
+                }
+                
+                const tz1 = new Date(start.getTime() - (start.getTimezoneOffset() * 60000));
+                const tz2 = new Date(end.getTime() - (end.getTimezoneOffset() * 60000));
+                currentStartStr = tz1.toISOString().split('T')[0];
+                currentEndStr = tz2.toISOString().split('T')[0];
                 
                 renderDashboard();
             }
